@@ -55,47 +55,9 @@ function spotifythissong (instructions){
   console.log("spotifythissong")
   console.log(instructions)
 
+  var spotInstructions = (instructions) ? instructions : 'The Sign Ace of Base';
 
-
-  if (instructions){
-    console.log("GOOD instructions")
-    //console.log(instructions)
-
-    spotify.search({ type: 'track', query: instructions, limit: 1 })
-    .then(function(response) {
-
-      var spotArr = response.tracks.items;
-      spotArr.forEach(element => {
-      albumName = element.album.name;
-      artistTopArray = element.artists;
-
-      for (key in artistTopArray ){
-        console.log("\n-----------------------------------")
-        artistTopArray.forEach(function(properties){  
-          composerName = properties.name,
-          console.log("\nArtist/s: " + composerName)
-        })
-      }
-      songName = element.name;
-      songPreview = element.preview_url;
-
-      console.log("Name of Song: " + songName)
-      console.log("Preview of song: " + songPreview)
-      console.log("Album Name: " + albumName)
-      console.log("\n-----------------------------------")
-      spotLogArray.push(instructions, composerName, albumName, songName, songPreview);
-      liriLogger(spotLogArray)
-      });
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
-  }
-  else if (!instructions){
-      console.log("BAD instructions")
-      console.log(instructions)
-
-      spotify.search({ type: 'track', query: 'The Sign Ace of Base', limit: 1 })
+      spotify.search({ type: 'track', query: spotInstructions, limit: 1 })
       .then(function(response) {
 
         var spotArr = response.tracks.items;
@@ -109,7 +71,6 @@ function spotifythissong (instructions){
             composerName = properties.name,
             console.log("\nArtist/s: " + composerName)
           })
-          
         }
         songName = element.name;
         songPreview = element.preview_url;
@@ -125,13 +86,7 @@ function spotifythissong (instructions){
       .catch(function(err) {
         console.log(err);
       });
-
-    }
-
     
-   
-    
-  
 }
 
 
