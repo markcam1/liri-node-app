@@ -20,12 +20,23 @@ var availableActions = {
   "do-what-it-says" : dowhatitsays,
 }
 
+var composerName = "";
+var albumName = "";
+var songName = "";
+var songPreview = "";
+var spotLogArray = [];
+var instructions;
+
 
 if (!availableActions[action]) {
   return console.log('You must provide one of the following actions:\n', Object.keys(availableActions).join('\n'))
 }
 
 availableActions[action](instructions)
+
+
+
+
 
 
 
@@ -39,45 +50,88 @@ function mytweets() {
   
 }
 
+
 function spotifythissong (instructions){
   console.log("spotifythissong")
   console.log(instructions)
 
 
 
-  spotify.search({ type: 'track', query: 'All the Small Things', limit: 1 })
-  .then(function(response) {
-    console.log(response);
-    console.log(JSON.stringify(response, null, 2));
-  })
-  .catch(function(err) {
-    console.log(err);
-  });
-
-
-/*
-This will show:
-Artist(s)
-The song's name
-A preview link of the song from Spotify
-The album that the song is from
-
-If no song is provided then your program will default to "The Sign" by Ace of Base.
-
-*/
-
   if (instructions){
     console.log("GOOD instructions")
-    console.log(instructions)
+    //console.log(instructions)
 
+    spotify.search({ type: 'track', query: instructions, limit: 1 })
+    .then(function(response) {
 
-    }
+      var spotArr = response.tracks.items;
+      spotArr.forEach(element => {
+      albumName = element.album.name;
+      artistTopArray = element.artists;
+
+      for (key in artistTopArray ){
+        console.log("\n-----------------------------------")
+        artistTopArray.forEach(function(properties){  
+          composerName = properties.name,
+          console.log("\nArtist/s: " + composerName)
+        })
+      }
+      songName = element.name;
+      songPreview = element.preview_url;
+
+      console.log("Name of Song: " + songName)
+      console.log("Preview of song: " + songPreview)
+      console.log("Album Name: " + albumName)
+      console.log("\n-----------------------------------")
+      spotLogArray.push(instructions, composerName, albumName, songName, songPreview);
+      liriLogger(spotLogArray)
+      });
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
+  }
   else if (!instructions){
       console.log("BAD instructions")
       console.log(instructions)
+
+      spotify.search({ type: 'track', query: 'The Sign Ace of Base', limit: 1 })
+      .then(function(response) {
+
+        var spotArr = response.tracks.items;
+        spotArr.forEach(element => {
+        albumName = element.album.name;
+        artistTopArray = element.artists;
+  
+        for (key in artistTopArray ){
+          console.log("\n-----------------------------------")
+          artistTopArray.forEach(function(properties){ 
+            composerName = properties.name,
+            console.log("\nArtist/s: " + composerName)
+          })
+          
+        }
+        songName = element.name;
+        songPreview = element.preview_url;
+  
+        console.log("Name of Song: " + songName)
+        console.log("Preview of song: " + songPreview)
+        console.log("Album Name: " + albumName)
+        console.log("\n-----------------------------------")
+        spotLogArray.push(instructions, composerName, albumName, songName, songPreview);
+        liriLogger(spotLogArray)
+        });
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+
     }
 
-
+    
+   
+    
+  
 }
 
 
@@ -86,6 +140,18 @@ If no song is provided then your program will default to "The Sign" by Ace of Ba
 function moviethis (instructions){
   console.log("moviethis")
   console.log(instructions)
+
+  /*
+  * Title of the movie.
+  * Year the movie came out.
+  * IMDB Rating of the movie.
+  * Rotten Tomatoes Rating of the movie.
+  * Country where the movie was produced.
+  * Language of the movie.
+  * Plot of the movie.
+  * Actors in the movie.
+  */
+
 
   var movieName = instructions;
 
@@ -103,6 +169,11 @@ function moviethis (instructions){
       console.log("Release Year: " + JSON.parse(body).Year);
     }
   });
+
+  /*
+  If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+  If you haven't watched "Mr. Nobody," then you should: http://www.imdb.com/title/tt0485947/
+  */
 
 }
 
@@ -142,7 +213,11 @@ function dowhatitsays (instructions){
 }
 
 
-function logger (){
+function liriLogger (inComingArr){
+
+  console.log("inComingArr")
+  console.log(inComingArr)
+  console.log(inComingArr.length)
 
     /*
   In addition to logging the data to your terminal/bash window, output the data to a .txt file called log.txt.
