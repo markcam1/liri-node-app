@@ -6,6 +6,9 @@ var request = require("request");
 var fs = require('fs')
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
+var moment = require('moment');
+
+
 var action = process.argv[2]
 var instructions = process.argv.slice(3).join("+")
 var availableActions = {
@@ -18,6 +21,7 @@ var composerName = "";
 var albumName = "";
 var songName = "";
 var songPreview = "";
+var spotInstructions = "";
 var instructions;
 var twitterText = "";
 var twitterDateTime = "";
@@ -50,8 +54,6 @@ function mytweets() {
 }
 
 function spotifythissong (instructions){
-  console.log("spotifythissong")
-  console.log(instructions)
 
   var spotInstructions = (instructions) ? instructions : 'The Sign Ace of Base';
   
@@ -116,7 +118,7 @@ function moviethis (instructions){
               omdbRating_rotten_Val = movieRatingObj.Value;
             }
             else {
-              omdbRating_rotten_Name = "Rotten Tomatoes" ;
+              omdbRating_rotten_Name = "Rotten Tomatoes: " ;
               omdbRating_rotten_Val = "Not Available";
             }
           }
@@ -134,7 +136,7 @@ function moviethis (instructions){
       console.log("Actors: " + omdbActors);
       console.log("\n-----------------------------------")
       
-      omdbLogArray.push(instructions, queryUrl, omdbTitle, omdbYear, omdbRating_imdb_Name, omdbRating_imdb_Val,);
+      omdbLogArray.push(movieName, queryUrl, omdbTitle, omdbYear, omdbRating_imdb_Name, omdbRating_imdb_Val,);
       omdbLogArray.push(omdbRating_rotten_Name + omdbRating_rotten_Val, omdbCountry + omdbLanguage + omdbPlot + omdbActors);
       liriLogger(omdbLogArray);
     }
@@ -143,69 +145,39 @@ function moviethis (instructions){
 
 
 function dowhatitsays (instructions){
-  console.log("dowhatitsays")
-  console.log(instructions)
-
-  /*
-  node liri.js do-what-it-says
-  Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-  It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
-  Feel free to change the text in that document to test out the feature for other commands.
-  */
 
   fs.readFile("random.txt", "utf8", function(error, data) {
 
-    // If the code experiences any errors it will log the error to the console.
     if (error) {
       return console.log(error);
     }
-
-    // We will then print the contents of data
-    console.log(data);
-
-    // Then split it by commas (to make it more readable)
     var dataArr = data.split(",");
-
-    // We will then re-display the content as an array for later use.
-    console.log(dataArr[0]);
-    console.log(dataArr[1]);
     fsCommand = dataArr[0];
     fsInstructions = dataArr[1];
     spotifythissong(fsInstructions);
-
   });
-
-
 }
-
 
 function liriLogger (inComingArr){
 
-  console.log("inComingArr")
-  console.log(inComingArr)
-  console.log(inComingArr.length)
+  var formatted = moment().format('YYYY-MM-DD HH:mm:ss Z');
+  inComingArr.unshift(formatted)
+  
+  var logString = inComingArr.join("|");
+  var logArray = new Array();
+  logArray = logString;
 
-    /*
-  In addition to logging the data to your terminal/bash window, output the data to a .txt file called log.txt.
-  Make sure you append each command you run to the log.txt file. 
-  Do not overwrite your file each time you run a command.
+  fs.appendFile("log.txt", "\n" + logArray, function(err) {
 
-  */
-
-  fs.appendFile("log.txt", "\n" + inComingArr, function(err) {
-
-    // If an error was experienced we say it.
     if (err) {
       console.log(err);
     }
-
-    // If no error is experienced, we'll log the phrase "Content Added" to our node console.
     else {
       console.log("Content Added!");
     }
-
   });
-
-
 }
+
+var formatted = moment().format('YYYY-MM-DD HH:mm:ss Z');
+console.log("time: " + formatted)
 
