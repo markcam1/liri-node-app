@@ -14,7 +14,7 @@ This production employs JavaScript, and a number Node.js packages.
 
 ---
 
-![TBD](https://github.com/markcam1/markcam1.github.io/blob/master/assets/images/vscode.png)
+![LIRI Node app](https://github.com/markcam1/liri-node-app/blob/master/media/liri_node.png)
 
 ---
 
